@@ -109,9 +109,9 @@ local function loadSavedLicense()
     return nil
 end
 
--- Modified function to force premium user type
 local function loadUserType()
-    return string.char(112,114,101,109,105,117,109)  -- \"premium\"
+    -- Override to always return premium user
+    return string.char(112,114,101,109,105,117,109)  -- "premium"
 end
 
 local function saveLicenseAndDevice(key, deviceId, userType)
@@ -131,7 +131,6 @@ local function saveLicenseAndDevice(key, deviceId, userType)
     return true
 end
 
--- Continue the rest of your script here unchanged...
 local function clearSavedLicense()
     local success1 = m(E)
     local success2 = m(F)
@@ -776,4 +775,399 @@ local function toggleMagicSkyshotMumbaiMap()
         for i,v in w(saved.magic_skyshot_mumbai_map) do v.value = 0.15 end
         a.setValues(saved.magic_skyshot_mumbai_map)
         a.clearResults()
-        i(string.char(240,159,15
+        i(string.char(240,159,157,140,32,77,97,103,105,99,32,83,107,121,115,104,111,116,32,79,70,70))
+    end
+end
+
+local function toggleFlynotdown(on)
+    if on then
+        a.clearResults()
+        a.setRanges(a.REGION_ANONYMOUS)
+        a.searchNumber(string.char(45,57,46,56,49), a.TYPE_FLOAT, false, a.SIGN_EQUAL, 0, -1)
+        saved.flynotdown = a.getResults(1000)
+
+        if #saved.flynotdown > 0 then
+            for i,v in w(saved.flynotdown) do
+                v.value = 2.5
+                v.freeze = true
+            end
+            a.setValues(saved.flynotdown)
+            a.addListItems(saved.flynotdown)
+            i(string.char(240,159,143,135,32,70,76,89,32,65,67,84,73,86,65,84,69,68))
+        else
+            i(string.char(240,159,154,165,32,70,108,121,32,78,111,116,32,68,111,119,110,32,118,97,108,117,101,32,110,111,116,32,102,111,117,110,100))
+        end
+        a.clearResults()
+
+        a.setRanges(a.REGION_C_DATA)
+        a.searchNumber(string.char(50,46,49), a.TYPE_FLOAT)
+        saved.flashgravity = a.getResults(1000)
+
+        if #saved.flashgravity > 0 then
+            for i,v in w(saved.flashgravity) do
+                v.value = 100
+                v.freeze = false
+            end
+            a.setValues(saved.flashgravity)
+            i(string.char(240,159,143,135,32,240,159,165,160,240,159,165,160,240,159,149,167,239,184,143))
+        else
+            i(string.char(240,159,154,165,32,70,108,97,115,104,32,71,114,97,118,105,116,121,32,118,97,108,117,101,32,110,111,116,32,102,111,117,110,100))
+        end
+        a.clearResults()
+
+        state.flynotdown = true
+        i(string.char(70,76,89,32,78,79,84,32,68,79,87,78,32,240,159,143,135))
+
+    else
+        if saved.flynotdown and #saved.flynotdown > 0 then
+            for i,v in w(saved.flynotdown) do
+                v.value = 9.81
+                v.freeze = false
+            end
+            a.setValues(saved.flynotdown)
+            a.removeListItems(saved.flynotdown)
+            saved.flynotdown = nil
+            i(string.char(240,159,146,147,240,159,146,147))
+        else
+            i(string.char(240,159,154,165,32,78,111,32,70,108,121,32,78,111,116,32,68,111,119,110,32,100,97,116,97,32,116,111,32,114,101,118,101,114,116))
+        end
+
+        if saved.flashgravity and #saved.flashgravity > 0 then
+            for i,v in w(saved.flashgravity) do
+                v.value = 2.1
+                v.freeze = false
+            end
+            a.setValues(saved.flashgravity)
+            saved.flashgravity = nil
+            i(string.char(240,159,146,158,240,159,146,158))
+        else
+            i(string.char(240,159,154,165,32,78,111,32,70,108,97,115,104,32,71,114,97,118,105,116,121,32,100,97,116,97,32,116,111,32,114,101,118,101,114,116))
+        end
+
+        state.flynotdown = false
+        i(string.char(240,159,157,140,32,70,76,89,32,68,69,65,67,84,73,86,65,84,69,68))
+    end
+end
+
+local function applySelectedFeatures(selectedFeatures)
+    if state.antenna and getFeatureStatus(string.char(97,110,116,101,110,110,97)) then toggleAntenna() end
+    if state.noammo and getFeatureStatus(string.char(110,111,97,109,109,111)) then turnOffNoAmmo() end
+    if state.magic_headshot and getFeatureStatus(string.char(109,97,103,105,99,95,104,101,97,100,115,104,111,116)) then toggleMagicHeadshot() end
+    if state.magic_bodyshot and getFeatureStatus(string.char(109,97,103,105,99,95,98,111,100,121,115,104,111,116)) then toggleMagicBodyshot() end
+    if state.magic_bullet and getFeatureStatus(string.char(109,97,103,105,99,95,98,117,108,108,101,116)) then toggleMagicBullet() end
+    if state.tree_grass_clean and getFeatureStatus(string.char(116,114,101,101,95,103,114,97,115,115,95,99,108,101,97,110)) then toggleTreeAndGrassClean() end
+    if state.ipad_view and getFeatureStatus(string.char(105,112,97,100,95,118,105,101,119)) then toggleiPadView() end
+    if state.magic_skyshot_mumbai_map and getFeatureStatus(string.char(109,97,103,105,99,95,115,107,121,115,104,111,116,95,109,117,109,98,97,105,95,109,97,112)) then toggleMagicSkyshotMumbaiMap() end
+    if state.flynotdown and getFeatureStatus(string.char(102,108,121,95,104,97,99,107)) then toggleFlynotdown(false) end
+    
+    if selectedFeatures[1] and getFeatureStatus(string.char(109,97,103,105,99,95,104,101,97,100,115,104,111,116)) then toggleMagicHeadshot() end
+    if selectedFeatures[2] and getFeatureStatus(string.char(109,97,103,105,99,95,98,111,100,121,115,104,111,116)) then toggleMagicBodyshot() end
+    if selectedFeatures[3] and getFeatureStatus(string.char(97,110,116,101,110,110,97)) then toggleAntenna() end
+    if selectedFeatures[4] and getFeatureStatus(string.char(110,111,97,109,109,111)) then turnOnNoAmmo() end
+    if selectedFeatures[5] and getFeatureStatus(string.char(109,97,103,105,99,95,98,117,108,108,101,116)) then toggleMagicBullet() end
+    if selectedFeatures[6] and getFeatureStatus(string.char(116,114,101,101,95,103,114,97,115,115,95,99,108,101,97,110)) then toggleTreeAndGrassClean() end
+    if selectedFeatures[7] and getFeatureStatus(string.char(105,112,97,100,95,118,105,101,119)) then toggleiPadView() end
+    if selectedFeatures[8] and getFeatureStatus(string.char(109,97,103,105,99,95,115,107,121,115,104,111,116,95,109,117,109,98,97,105,95,109,97,112)) then toggleMagicSkyshotMumbaiMap() end
+    if selectedFeatures[9] and getFeatureStatus(string.char(102,108,121,95,104,97,99,107)) then toggleFlynotdown(true) end
+    
+    i(string.char(240,159,143,135,32,70,101,97,116,117,114,101,115,32,97,112,112,108,105,101,100,32,115,117,99,99,101,115,115,102,117,108,108,121,33))
+end
+
+local function mainMenu(userType)
+    checkFunctionsControl()
+    
+    local isFreeUser = (userType == string.char(102,114,101,101))
+    
+    -- KEEP MENU TITLE UNENCRYPTED
+    local menuTitle = [[
+╔════════════════════════════╗
+║         💀 DEATH SF 💀       
+║         🔥 Version 2.0 🔥   
+╚════════════════════════════╝]]
+    
+    if isFreeUser then
+        menuTitle = menuTitle .. "\n👤 FREE USER - LIMITED FEATURES"
+    else
+        menuTitle = menuTitle .. "\n👑 PREMIUM USER - FULL ACCESS"
+    end
+
+    local menuOptions = {}
+    local selectedStates = {}
+    local optionIndex = 1
+    
+    if isFreeUser then
+        if getFeatureStatus(string.char(109,97,103,105,99,95,104,101,97,100,115,104,111,116)) then
+            menuOptions[optionIndex] = "🎯 MAGIC HEADSHOT    " .. (state.magic_headshot and "[✅]" or "[❌]")
+            selectedStates[optionIndex] = state.magic_headshot
+            optionIndex = optionIndex + 1
+        end
+        
+        if getFeatureStatus(string.char(97,110,116,101,110,110,97)) then
+            menuOptions[optionIndex] = "📡 ANTENNA HACK      " .. (state.antenna and "[✅]" or "[❌]")
+            selectedStates[optionIndex] = state.antenna
+            optionIndex = optionIndex + 1
+        end
+        
+        menuOptions[optionIndex] = "💎 UPGRADE TO PREMIUM"
+        selectedStates[optionIndex] = false
+        optionIndex = optionIndex + 1
+        
+    else
+        if getFeatureStatus(string.char(109,97,103,105,99,95,104,101,97,100,115,104,111,116)) then
+            menuOptions[optionIndex] = "🎯 MAGIC HEADSHOT    " .. (state.magic_headshot and "[✅]" or "[❌]")
+            selectedStates[optionIndex] = state.magic_headshot
+            optionIndex = optionIndex + 1
+        end
+        
+        if getFeatureStatus(string.char(109,97,103,105,99,95,98,111,100,121,115,104,111,116)) then
+            menuOptions[optionIndex] = "🎯 MAGIC BODYSHOT    " .. (state.magic_bodyshot and "[✅]" or "[❌]")
+            selectedStates[optionIndex] = state.magic_bodyshot
+            optionIndex = optionIndex + 1
+        end
+        
+        if getFeatureStatus(string.char(97,110,116,101,110,110,97)) then
+            menuOptions[optionIndex] = "📡 ANTENNA HACK      " .. (state.antenna and "[✅]" or "[❌]")
+            selectedStates[optionIndex] = state.antenna
+            optionIndex = optionIndex + 1
+        end
+        
+        if getFeatureStatus(string.char(110,111,97,109,109,111)) then
+            menuOptions[optionIndex] = "🔫 NO AMMO DECREASE  " .. (state.noammo and "[✅]" or "[❌]")
+            selectedStates[optionIndex] = state.noammo
+            optionIndex = optionIndex + 1
+        end
+        
+        if getFeatureStatus(string.char(109,97,103,105,99,95,98,117,108,108,101,116)) then
+            menuOptions[optionIndex] = "💫 MAGIC BULLET      " .. (state.magic_bullet and "[✅]" or "[❌]")
+            selectedStates[optionIndex] = state.magic_bullet
+            optionIndex = optionIndex + 1
+        end
+        
+        if getFeatureStatus(string.char(116,114,101,101,95,103,114,97,115,115,95,99,108,101,97,110)) then
+            menuOptions[optionIndex] = "🌳 TREE & GRASS CLEAN " .. (state.tree_grass_clean and "[✅]" or "[❌]")
+            selectedStates[optionIndex] = state.tree_grass_clean
+            optionIndex = optionIndex + 1
+        end
+        
+        if getFeatureStatus(string.char(105,112,97,100,95,118,105,101,119)) then
+            menuOptions[optionIndex] = "📱 iPad VIEW         " .. (state.ipad_view and "[✅]" or "[❌]")
+            selectedStates[optionIndex] = state.ipad_view
+            optionIndex = optionIndex + 1
+        end
+        
+        if getFeatureStatus(string.char(109,97,103,105,99,95,115,107,121,115,104,111,116,95,109,117,109,98,97,105,95,109,97,112)) then
+            menuOptions[optionIndex] = "☁ MAGIC SKYSHOT     " .. (state.magic_skyshot_mumbai_map and "[✅]" or "[❌]")
+            selectedStates[optionIndex] = state.magic_skyshot_mumbai_map
+            optionIndex = optionIndex + 1
+        end
+        
+        if getFeatureStatus(string.char(102,108,121,95,104,97,99,107)) then
+            menuOptions[optionIndex] = "🚀 FLY HACK          " .. (state.flynotdown and "[✅]" or "[❌]")
+            selectedStates[optionIndex] = state.flynotdown
+            optionIndex = optionIndex + 1
+        end
+    end
+    
+    menuOptions[optionIndex] = "🚪 EXIT SCRIPT"
+    selectedStates[optionIndex] = false
+    
+    local selected = a.multiChoice(menuOptions, selectedStates, menuTitle)
+
+    if selected == nil then
+        return
+    end
+    
+    if isFreeUser then
+        local featureCount = 0
+        if getFeatureStatus(string.char(109,97,103,105,99,95,104,101,97,100,115,104,111,116)) then featureCount = featureCount + 1 end
+        if getFeatureStatus(string.char(97,110,116,101,110,110,97)) then featureCount = featureCount + 1 end
+        
+        local upgradeOptionIndex = featureCount + 1
+        
+        if selected[upgradeOptionIndex] then
+            h([[
+💎 UPGRADE TO PREMIUM
+━━━━━━━━━━━━━━━━━━━━
+
+✨ Premium Features:
+• Magic Bodyshot
+• No Ammo Decrease  
+• Magic Bullet
+• Tree & Grass Clean
+• iPad View
+• Magic Skyshot
+• Fly Hack
+
+🔑 Contact the admin to get a premium license key!
+
+📞 Telegram: @deaths4f & scarfall_hackerss
+            ]])
+            return
+        end
+    end
+    
+    local exitOptionIndex = #menuOptions
+    if selected[exitOptionIndex] then
+        local confirm = h("🚪 EXIT DEATH HX?\n\nAre you sure you want to exit?", "✅ YES, EXIT", "❌ NO, CANCEL")
+        if confirm == 1 then
+            -- KEEP EXIT MESSAGE UNENCRYPTED
+            h([[
+╔══════════════════════════╗
+║        THANK YOU FOR         
+║        USING DEATH SF!       
+╠══════════════════════════╣
+║                              
+║   🔒 Stay Safe & Happy       
+║   🎮 Gaming!                 
+║                              
+║   👋 See You Next Time!      
+╚══════════════════════════╝
+            ]])
+            k() 
+        end
+        return
+    end
+    
+    local featureSelection = {false, false, false, false, false, false, false, false, false}
+    local currentIndex = 1
+    
+    if getFeatureStatus(string.char(109,97,103,105,99,95,104,101,97,100,115,104,111,116)) then
+        if selected[currentIndex] then featureSelection[1] = true end
+        currentIndex = currentIndex + 1
+    end
+    
+    if getFeatureStatus(string.char(109,97,103,105,99,95,98,111,100,121,115,104,111,116)) then
+        if selected[currentIndex] then featureSelection[2] = true end
+        currentIndex = currentIndex + 1
+    end
+    
+    if getFeatureStatus(string.char(97,110,116,101,110,110,97)) then
+        if selected[currentIndex] then featureSelection[3] = true end
+        currentIndex = currentIndex + 1
+    end
+    
+    if getFeatureStatus(string.char(110,111,97,109,109,111)) then
+        if selected[currentIndex] then featureSelection[4] = true end
+        currentIndex = currentIndex + 1
+    end
+    
+    if getFeatureStatus(string.char(109,97,103,105,99,95,98,117,108,108,101,116)) then
+        if selected[currentIndex] then featureSelection[5] = true end
+        currentIndex = currentIndex + 1
+    end
+    
+    if getFeatureStatus(string.char(116,114,101,101,95,103,114,97,115,115,95,99,108,101,97,110)) then
+        if selected[currentIndex] then featureSelection[6] = true end
+        currentIndex = currentIndex + 1
+    end
+    
+    if getFeatureStatus(string.char(105,112,97,100,95,118,105,101,119)) then
+        if selected[currentIndex] then featureSelection[7] = true end
+        currentIndex = currentIndex + 1
+    end
+    
+    if getFeatureStatus(string.char(109,97,103,105,99,95,115,107,121,115,104,111,116,95,109,117,109,98,97,105,95,109,97,112)) then
+        if selected[currentIndex] then featureSelection[8] = true end
+        currentIndex = currentIndex + 1
+    end
+    
+    if getFeatureStatus(string.char(102,108,121,95,104,97,99,107)) then
+        if selected[currentIndex] then featureSelection[9] = true end
+        currentIndex = currentIndex + 1
+    end
+    
+    applySelectedFeatures(featureSelection)
+    
+    local statusText = "📊 CURRENT STATUS:\n\n"
+    local hasActiveFeatures = false
+    
+    if getFeatureStatus(string.char(109,97,103,105,99,95,104,101,97,100,115,104,111,116)) then
+        statusText = statusText .. "🎯 Magic Headshot: " .. (state.magic_headshot and "✅ ON" or "❌ OFF") .. "\n"
+        hasActiveFeatures = true
+    end
+    
+    if getFeatureStatus(string.char(109,97,103,105,99,95,98,111,100,121,115,104,111,116)) then
+        statusText = statusText .. "🎯 Magic Bodyshot: " .. (state.magic_bodyshot and "✅ ON" or "❌ OFF") .. "\n"
+        hasActiveFeatures = true
+    end
+    
+    if getFeatureStatus(string.char(97,110,116,101,110,110,97)) then
+        statusText = statusText .. "📡 Antenna Hack: " .. (state.antenna and "✅ ON" or "❌ OFF") .. "\n"
+        hasActiveFeatures = true
+    end
+    
+    if getFeatureStatus(string.char(110,111,97,109,109,111)) then
+        statusText = statusText .. "🔫 No Ammo: " .. (state.noammo and "✅ ON" or "❌ OFF") .. "\n"
+        hasActiveFeatures = true
+    end
+    
+    if getFeatureStatus(string.char(109,97,103,105,99,95,98,117,108,108,101,116)) then
+        statusText = statusText .. "💫 Magic Bullet: " .. (state.magic_bullet and "✅ ON" or "❌ OFF") .. "\n"
+        hasActiveFeatures = true
+    end
+    
+    if getFeatureStatus(string.char(116,114,101,101,95,103,114,97,115,115,95,99,108,101,97,110)) then
+        statusText = statusText .. "🌳 Tree & Grass Clean: " .. (state.tree_grass_clean and "✅ ON" or "❌ OFF") .. "\n"
+        hasActiveFeatures = true
+    end
+    
+    if getFeatureStatus(string.char(105,112,97,100,95,118,105,101,119)) then
+        statusText = statusText .. "📱 iPad View: " .. (state.ipad_view and "✅ ON" or "❌ OFF") .. "\n"
+        hasActiveFeatures = true
+    end
+    
+    if getFeatureStatus(string.char(109,97,103,105,99,95,115,107,121,115,104,111,116,95,109,117,109,98,97,105,95,109,97,112)) then
+        statusText = statusText .. "☁ Magic Skyshot: " .. (state.magic_skyshot_mumbai_map and "✅ ON" or "❌ OFF") .. "\n"
+        hasActiveFeatures = true
+    end
+    
+    if getFeatureStatus(string.char(102,108,121,95,104,97,99,107)) then
+        statusText = statusText .. "🚀 Fly Hack: " .. (state.flynotdown and "✅ ON" or "❌ OFF") .. "\n"
+        hasActiveFeatures = true
+    end
+    
+    if not hasActiveFeatures then
+        statusText = statusText .. "No features currently active\n"
+    end
+    
+    if functionsControl.messages.announcement ~= string.char(34,34) then
+        statusText = statusText .. "\n\n📢 Announcement:\n" .. functionsControl.messages.announcement
+    end
+    
+    h(statusText, "🔙 BACK TO MENU")
+end
+
+i(string.char(240,159,148,145,32,73,110,105,116,105,97,108,105,122,105,110,103,32,68,69,65,84,72,32,72,88,32,50,46,48,46,46,46))
+local loginSuccess, userType = enhancedLoginSystem()
+if not loginSuccess then
+    k()
+end
+
+i(string.char(240,159,143,135,32,76,111,103,105,110,32,115,117,99,99,101,115,115,102,117,108,33,32,87,101,108,99,111,109,101,32,116,111,32,68,69,65,84,72,32,72,88,32,50,46,48))
+
+if userType == string.char(102,114,101,101) then
+    i(string.char(240,159,145,164,32,70,114,101,101,32,85,115,101,114,32,45,32,76,105,109,105,116,101,100,32,70,101,97,116,117,114,101,115))
+else
+    i(string.char(240,159,145,145,32,80,114,101,109,105,117,109,32,85,115,101,114,32,45,32,70,117,108,108,32,65,99,99,101,115,115))
+end
+
+i(string.char(240,159,148,141,32,67,104,101,99,107,105,110,103,32,102,111,114,32,109,97,110,100,97,116,111,114,121,32,117,112,100,97,116,101,115,46,46,46))
+mandatoryUpdateCheck()
+
+i(string.char(240,159,148,141,32,67,104,101,99,107,105,110,103,32,102,117,110,99,116,105,111,110,115,32,99,111,110,116,114,111,108,46,46,46))
+checkFunctionsControl()
+
+if l(string.char(37,89,37,109,37,100))>string.char(50,48,50,54,49,49,49,54) then
+    h(string.char(240,159,157,140,32,83,99,114,105,112,116,32,69,120,112,105,114,101,100,32,240,159,157,140,10,240,159,147,149,32,68,111,119,110,108,111,97,100,32,76,97,116,101,115,116,32,86,101,114,115,105,111,110))
+    k()
+end
+
+i(string.char(240,159,148,165,32,83,99,114,105,112,116,32,65,99,116,105,118,97,116,101,100,33))
+
+while true do
+    if a.isVisible(true) then
+        a.setVisible(false)
+        mainMenu(userType)
+    end
+    a.sleep(100)
+end
